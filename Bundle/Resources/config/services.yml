@@ -1,0 +1,19 @@
+parameters:
+#    elendev_phar.example.class: Elendev\PharBundle\Example
+    elendev_phar.local.app_directory: "%kernel.root_dir%"
+    elendev_phar.local.root_directory: "%kernel.root_dir%/.."
+    elendev_phar.local.web_directory: "%kernel.root_dir%/../web"
+    elendev_phar.local.vendor_directory: "%kernel.root_dir%/../vendor"
+    elendev_phar.local.src_directory: "%kernel.root_dir%/../src"
+    elendev_phar.local.default_app: "%elendev_phar.local.web_directory%/app.php"
+    
+    elendev_phar.target.directory: "%kernel.root_dir%/../target"
+    elendev_phar.target.name: "app.phar"
+    
+    elendev_phar.archive.web_dir: "web"
+    elendev_phar.archive.app_php: "app.php" #should be in web_dir
+
+services:
+#    elendev_phar.example:
+#        class: %elendev_phar.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
