@@ -7,7 +7,13 @@ abstract class PharAwareKernel extends Kernel {
 	
 	public function getCacheDir() {
 		if(Phar::running()){
-			return dirname(Phar::running(false)) . '/cache/' . $this->environment;
+			if(defined('ELENDEV_PHAR_CACHE_DIR')) {
+				$baseDir = ELENDEV_PHAR_CACHE_DIR;
+			} else {
+				$baseDir = dirname(Phar::running(false)) . '/cache/' . basename(Phar::running(false), ".phar") . "/";
+			}
+			
+			return $baseDir . "/" . $this->environment;
 		} else {
 			return $this->rootDir . "/cache/" . $this->environment;
 		}
@@ -15,7 +21,15 @@ abstract class PharAwareKernel extends Kernel {
 	
 	public function getLogDir() {
 		if(Phar::running()){
-			return dirname(Phar::running(false)) . '/logs/' . $this->environment;
+			
+			if(defined('ELENDEV_PHAR_LOG_DIR')) {
+				$baseDir = ELENDEV_PHAR_LOG_DIR;
+			} else {
+				$baseDir = dirname(Phar::running(false)) . '/logs/' . basename(Phar::running(false), ".phar") . "/";
+			}
+			
+			return $baseDir . "/" . $this->environment;
+			
 		} else {
 			return $this->rootDir . "/logs/" . $this->environment;
 		}

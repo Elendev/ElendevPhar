@@ -55,7 +55,7 @@ class PharCreateCommand extends ContainerAwareCommand {
 		
 		$pharPath = $input->getOption("target");
 		if(!$pharPath){
-			$targetDir . "/" . $pharName;
+			$pharPath = $targetDir . "/" . $pharName;
 		}
 		
 		$appPath = $container->getParameter("elendev_phar.local.app_directory");
@@ -161,11 +161,28 @@ class PharCreateCommand extends ContainerAwareCommand {
 	
 	
 	
-	private function getStubContent($pharName, $publicDirectory = "web", $appScript = "app.hp"){
+	private function getStubContent($pharName, $publicDirectory = "web", $appScript = "app.hp", $confConstantsPrefix = "ELENDEV_PHAR"){
 		
 		return '<?php
 Phar::mapPhar("' . $pharName . '");
 Phar::interceptFileFuncs();
+
+$confFile = dirname(__FILE__) . "/" . basename(__FILE__, ".phar") . ".ini";
+$configurations = array();
+if(file_exists($confFile)){
+	$configurations = parse_ini_file($confFile);
+	
+	$replaceValues = array(
+		"%current_dir%" => dirname(__FILE__),
+		"%phar_filename%" => basename(__FILE__),
+		"%phar_name%" => basename(__FILE__, ".phar")
+	);
+	
+	//set vars as constants after modifying some specific placeholders
+	foreach($configurations as $key => $value){
+		define("' . $confConstantsPrefix . '_" . strtoupper($key), str_replace(array_keys($replaceValues), $replaceValues, $value));
+	}
+}
 
 if(php_sapi_name() == "cli") {
 	include "phar://" . __FILE__ . "/app/console";
